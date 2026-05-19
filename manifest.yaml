@@ -1,0 +1,24 @@
+bundle: llm-orchestration-substrate
+version: 1.0.0
+artifact_count: 20
+artifacts:
+- ANALYSIS.md
+- LLM_CANONICAL.md
+- README.md
+- bridge/bridge_spec.md
+- pipeline/.github/workflows/deploy-substrate.yml
+- pipeline/config/deploy-config.yaml
+- pipeline/scripts/deploy_substrate.py
+- pipeline/scripts/pre_deploy_healthcheck.py
+- pipeline/scripts/publish_artifact.py
+- substrate/schemas/ack.v1.json
+- substrate/schemas/cost_model.v1.json
+- substrate/schemas/job_result.v1.json
+- substrate/schemas/job_spec.v1.json
+- substrate/schemas/raw_request.v1.json
+- substrate/schemas/routing_decision.v1.json
+- substrate/schemas/tool_call.v1.json
+- substrate/schemas/tool_result.v1.json
+- substrate/schemas/trace_event.v1.json
+- substrate/substrate.spec.yaml
+- tools/conformance_check.py
