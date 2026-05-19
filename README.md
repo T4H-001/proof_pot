@@ -11,7 +11,6 @@ pipeline and Senti Bridge admission spec.
 - `bridge/bridge_spec.md` — admission contract & state mapping.
 - `manifest.yaml` / `receipt.json` — handoff tracking with real sha256 hashes.
 - `ANALYSIS.md` — design critique, enhancements applied, and honest deploy status.
-- `.github/workflows/deploy-substrate.yml` — active CI (mirror of pipeline/ copy).
 
 ## Run conformance locally
     pip install pyyaml
@@ -19,4 +18,5 @@ pipeline and Senti Bridge admission spec.
 
 ## Deploy status
 Local bundle is REAL and verifiable. Staging/production deployment is BLOCKED
-until real secrets/endpoints are wired — see ANALYSIS.md.
+from this context — see ANALYSIS.md § Deploy status for exactly why and the
+next reversible step.
