@@ -1,0 +1,69 @@
+llm_orchestration_substrate:
+  version: 1.0.0
+  classification: reusable_client_agnostic_core
+  invariants:
+    - id: INV-1
+      rule: "No hard-coded tenant/client/brand/product identifiers in unit code"
+    - id: INV-2
+      rule: "All durable state changes go through job_state_store or trace_store only"
+    - id: INV-3
+      rule: "Every unit emits exactly one trace_event.v1 per invocation"
+    - id: INV-4
+      rule: "Every unit declares a frozen, versioned input and output contract"
+    - id: INV-5
+      rule: "Failure shapes are machine-readable result_codes, never free-text only"
+    - id: INV-6
+      rule: "Mutating units require an idempotency_key carried from job_spec, OR declare structural idempotency via idempotent_by (append-only sinks)"
+  primitives:
+    job_spec:    { schema_ref: schemas/job_spec.v1.json }
+    trace_event: { schema_ref: schemas/trace_event.v1.json }
+    cost_model:  { schema_ref: schemas/cost_model.v1.json }
+  result_codes:
+    - OK
+    - RETRYABLE_PROVIDER_ERROR
+    - NON_RETRYABLE_PROVIDER_ERROR
+    - BUDGET_EXCEEDED
+    - POLICY_BLOCKED
+    - TIMEOUT
+    - DEPENDENCY_UNAVAILABLE
+    - INTERNAL_ERROR
+  units:
+    - name: normalize_request
+      version: v1
+      input:  schemas/raw_request.v1.json
+      output: schemas/job_spec.v1.json
+      side_effects: []
+      mutating: false
+      telemetry: true
+    - name: route_job
+      version: v1
+      input:  schemas/job_spec.v1.json
+      output: schemas/routing_decision.v1.json
+      side_effects: []
+      mutating: false
+      telemetry: true
+    - name: execute_job
+      version: v1
+      input:  schemas/routing_decision.v1.json
+      output: schemas/job_result.v1.json
+      side_effects: [job_state_store, trace_store]
+      mutating: true
+      telemetry: true
+    - name: run_tool
+      version: v1
+      input:  schemas/tool_call.v1.json
+      output: schemas/tool_result.v1.json
+      side_effects: [trace_store]
+      mutating: true
+      telemetry: true
+    - name: record_trace
+      version: v1
+      input:  schemas/trace_event.v1.json
+      output: schemas/ack.v1.json
+      side_effects: [trace_store]
+      mutating: true
+      idempotent_by: [job_id, unit_name, seq]
+      telemetry: true
+  conformance:
+    validator: tools/conformance_check.py
+    ci_gate: pipeline/.github/workflows/deploy-substrate.yml
