@@ -1,0 +1,70 @@
+name: deploy-substrate
+
+# production is NOT triggered by push to main.
+# main -> validate + conformance + staging only.
+# production requires workflow_dispatch AND a protected GitHub Environment.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Deployment target"
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+      artifact_version:
+        description: "Exact artifact version to deploy (rollback pinning)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pyyaml jsonschema
+      - name: Conformance gate
+        run: python tools/conformance_check.py
+      - name: Compile / build
+        run: |
+          mkdir -p dist
+          tar -czf "dist/substrate-${{ github.sha }}.tgz" substrate tools
+      - uses: actions/upload-artifact@v4
+        with:
+          name: substrate-build
+          path: dist/
+
+  staging:
+    needs: validate
+    if: github.ref == 'refs/heads/main' || inputs.target == 'staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: substrate-build, path: dist }
+      - run: python pipeline/scripts/pre_deploy_healthcheck.py staging
+      - run: python pipeline/scripts/publish_artifact.py dist
+      - run: python pipeline/scripts/deploy_substrate.py staging
+
+  production:
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' && inputs.target == 'production'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: substrate-build, path: dist }
+      - run: python pipeline/scripts/pre_deploy_healthcheck.py production
+      - run: python pipeline/scripts/publish_artifact.py dist
+      - name: Promote pinned artifact
+        run: python pipeline/scripts/deploy_substrate.py production "${{ inputs.artifact_version }}"
