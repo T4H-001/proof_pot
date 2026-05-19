@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"schemas/tool_call.v1.json","title":"ToolCall.v1","type":"object","required":["job_id","tool","args","idempotency_key"],"properties":{"job_id":{"type":"string"},"tool":{"type":"string"},"args":{"type":"object"},"idempotency_key":{"type":"string","minLength":8}},"additionalProperties":false}
