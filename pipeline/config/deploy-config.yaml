@@ -1,0 +1,23 @@
+deploy_config:
+  version: 1.0.0
+  artifact:
+    name: llm-orchestration-substrate
+    repository_env: INTERNAL_ARTIFACT_REPOSITORY_URL
+    token_env: INTERNAL_ARTIFACT_REPOSITORY_TOKEN
+  targets:
+    staging:
+      deploy_webhook_env: STAGING_DEPLOY_WEBHOOK_URL
+      deploy_token_env:   STAGING_DEPLOY_WEBHOOK_TOKEN
+      healthcheck_env:    STAGING_HEALTHCHECK_URL
+      promotion_gate:     automatic_on_main
+    production:
+      deploy_webhook_env: PRODUCTION_DEPLOY_WEBHOOK_URL
+      deploy_token_env:   PRODUCTION_DEPLOY_WEBHOOK_TOKEN
+      healthcheck_env:    PRODUCTION_HEALTHCHECK_URL
+      promotion_gate:     manual_protected_environment
+      rollback:           pin_last_known_good_version
+  pre_deploy_health_checks:
+    - artifact_present
+    - config_resolves
+    - healthcheck_endpoint_2xx
+    - conformance_validator_passed
