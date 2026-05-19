@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"schemas/raw_request.v1.json","title":"RawRequest.v1","type":"object","required":["tenant_id","payload"],"properties":{"tenant_id":{"type":"string","minLength":1},"request_id":{"type":"string"},"payload":{"type":"object"},"hints":{"type":"object"}},"additionalProperties":true}
