@@ -1,11 +1,13 @@
 bundle: llm-orchestration-substrate
 version: 1.0.0
-artifact_count: 20
+artifact_count: 22
 artifacts:
 - ANALYSIS.md
 - LLM_CANONICAL.md
 - README.md
 - bridge/bridge_spec.md
+- governance/HOUSE_RULES.md
+- governance/KERNEL_ASSESSMENT.md
 - pipeline/.github/workflows/deploy-substrate.yml
 - pipeline/config/deploy-config.yaml
 - pipeline/scripts/deploy_substrate.py
