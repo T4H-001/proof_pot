@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"schemas/tool_result.v1.json","title":"ToolResult.v1","type":"object","required":["job_id","tool","result_code"],"properties":{"job_id":{"type":"string"},"tool":{"type":"string"},"result_code":{"type":"string"},"data":{},"error":{"type":["object","null"]}},"additionalProperties":false}
