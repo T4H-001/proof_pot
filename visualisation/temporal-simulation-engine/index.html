@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Temporal Simulation Engine Demo</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header>
+  <div>
+    <p class="eyebrow">Reusable interactive visualisation template</p>
+    <h1>Temporal Simulation Engine</h1>
+    <p class="sub">Change the object, environment, audience, time horizon and intervention variables. The same renderer adapts from mice to fish, trees, city traffic and myosin.</p>
+  </div>
+  <div class="badge" id="statusBadge">READY</div>
+</header>
+
+<main>
+  <section class="panel controls">
+    <div class="row">
+      <label>Object
+        <select id="objectSelect"></select>
+      </label>
+      <label>Audience
+        <select id="personaSelect"></select>
+      </label>
+      <label>Time horizon
+        <select id="timeSelect">
+          <option value="past">Past</option>
+          <option value="present" selected>Present</option>
+          <option value="future30">Future +30 days</option>
+          <option value="future90">Future +90 days</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="sliders"></div>
+
+    <div class="buttons">
+      <button id="runBtn">Run</button>
+      <button id="compareBtn">Compare</button>
+      <button id="forkBtn">Fork Scenario</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="panel">
+      <h2>World View</h2>
+      <div id="world" class="world"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Output</h2>
+      <div class="metric">
+        <span>Projected state</span>
+        <strong id="projectedValue">-</strong>
+      </div>
+      <div class="metric">
+        <span>Risk / opportunity</span>
+        <strong id="riskValue">-</strong>
+      </div>
+      <div class="metric">
+        <span>Primary consequence</span>
+        <strong id="consequenceValue">-</strong>
+      </div>
+      <div class="story" id="story"></div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="panel">
+      <h2>Past → Present → Future</h2>
+      <div id="timeline" class="timeline"></div>
+    </div>
+    <div class="panel">
+      <h2>Scenario Compare</h2>
+      <div id="compare" class="compare"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Table-driven model</h2>
+    <pre id="schemaView"></pre>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
