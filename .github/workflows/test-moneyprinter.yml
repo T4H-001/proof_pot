@@ -1,0 +1,55 @@
+name: Test MoneyPrinterTurbo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Clone MoneyPrinterTurbo
+        run: |
+          cd /tmp
+          git clone --depth 1 https://github.com/harry0703/MoneyPrinterTurbo.git
+          cd MoneyPrinterTurbo
+          ls -la
+          echo "=== README ==="
+          head -50 README-en.md
+          echo "=== pyproject.toml ==="
+          cat pyproject.toml
+      
+      - name: Install dependencies
+        run: |
+          cd /tmp/MoneyPrinterTurbo
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Start API server
+        run: |
+          cd /tmp/MoneyPrinterTurbo
+          timeout 30 python main.py &
+          sleep 10
+      
+      - name: Test API endpoints
+        run: |
+          echo "=== API Docs ==="
+          curl -sS http://127.0.0.1:8080/docs || echo "Docs endpoint failed"
+          echo "=== Tasks endpoint ==="
+          curl -sS http://127.0.0.1:8080/tasks?page=1&page_size=5 || echo "Tasks endpoint failed"
+          echo "=== Videos endpoint ==="
+          curl -sS http://127.0.0.1:8080/videos || echo "Videos endpoint failed"
+      
+      - name: Upload execution log
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: moneyprinter-test-output
+          path: /tmp/MoneyPrinterTurbo/*.log
+          if-no-files-found: ignore
